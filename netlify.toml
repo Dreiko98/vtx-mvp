@@ -1,0 +1,21 @@
+# Frontend en Netlify. El backend (Express + SQLite) corre en el servidor de casa.
+# Netlify reenvía /api/* al backend, así el navegador sólo habla con un origen (cookies y CSRF funcionan igual que en local).
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# 1) Proxy de la API al backend público de casa. Debe ir ANTES de la regla SPA.
+[[redirects]]
+  from = "/api/*"
+  to = "https://mallocenter.tail54fd3c.ts.net/api/:splat"
+  status = 200
+  force = true
+
+# 2) SPA: cualquier otra ruta sirve index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
